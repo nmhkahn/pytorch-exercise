@@ -4,9 +4,9 @@
 
 #### 1. Basics
 - [PyTorch 101]()
-- [CNN-MNIST](exercises/cnn_mnist)
+- [MNIST Classification](exercises/cnn_mnist)
 - [Custom Dataset]()
-- [TensorBoard[(exercises/tensorboard)
+- [TensorBoard](exercises/tensorboard)
 
 #### 2. CNN Applications
 - [Image Super-resolution](exercises/super_resolution)
