@@ -17,8 +17,12 @@ class Solver():
         self.loss_fn = nn.L1Loss()
         self.optim   = torch.optim.Adam(self.net.parameters(), args.lr)
         
-        self.train_data   = Dataset(args.train_dir, scale=args.scale)
-        self.test_data    = Dataset(args.test_dir, scale=args.scale)
+        self.train_data = Dataset(args.scale, train=True,
+                                  data_root=args.data_root,
+                                  size=args.image_size)
+        self.test_data  = Dataset(args.scale, train=False,
+                                  data_root=args.data_root,
+                                  size=args.image_size)
         self.train_loader = DataLoader(self.train_data,
                                        batch_size=args.batch_size,
                                        num_workers=1,

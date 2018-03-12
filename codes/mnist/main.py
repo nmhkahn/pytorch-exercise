@@ -24,6 +24,7 @@ def eval(net, loader):
 
 def train(args):
     net = Net().cuda()
+    # tensorboard writer for log summary
     writer = SummaryWriter()
     
     # MNIST dataset
@@ -62,7 +63,10 @@ def train(args):
             optim.step()
 
         acc = eval(net, test_loader)
+
+        # write scalar log on tensorboard
         writer.add_scalar("acc", acc, epoch+1)
+
         print("Epoch [{}/{}] loss: {:.5f} test acc: {:.3f}"
               .format(epoch+1, args.max_epochs, loss.data[0], acc))
 
