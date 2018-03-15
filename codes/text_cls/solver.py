@@ -10,15 +10,19 @@ class Solver():
     def __init__(self, args):
         
         # load SST dataset
-        train_iter, val_iter, test_iter, sst_info = load_sst(args.batch_size)
+        train_iter, val_iter, test_iter, sst_info = load_sst(args.batch_size, args.max_vocab)
         vocab_size = sst_info["vocab_size"]
         num_class  = sst_info["num_class"]
+        TEXT = sst_info["TEXT"]
 
-        self.net = Net(vocab_size, 
-                       args.embed_dim, args.hidden_dim,
+        print("[!] vocab_size: {}, num_class: {}".format(vocab_size, num_class))
+
+        self.net = Net(TEXT, 
+                       args.hidden_dim,
                        args.num_layers, num_class)
+        self.optim = torch.optim.Adam(filter(lambda p: p.requires_grad, self.net.parameters()),
+                                      args.lr, weight_decay=args.weight_decay)
         self.loss_fn = nn.CrossEntropyLoss()
-        self.optim   = torch.optim.Adam(self.net.parameters(), args.lr)
         
         self.net     = self.net.cuda()
         self.loss_fn = self.loss_fn.cuda()
