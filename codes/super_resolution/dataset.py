@@ -13,7 +13,7 @@ class Dataset(data.Dataset):
         super(Dataset, self).__init__()
 
         self.scale = scale
-        self.size = kwargs.get("size", -1) # -1 stands for original resolution
+        self.size = kwargs.get("size", -1) # -1 stands for the original resolution
         self.data_root = kwargs.get("data_root", "./data")
         
         self._prepare_dataset(self.size, self.data_root)

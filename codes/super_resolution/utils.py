@@ -20,7 +20,7 @@ def download_and_convert(size, data_root):
     if not os.path.exists(data_root):
         os.makedirs(data_root)
 
-    if not os.path.exists(os.path.join(data_root, "/flower_photos")):
+    if not os.path.exists(os.path.join(data_root, "flower_photos")):
         print("[!] Downloading images...")
         download_and_uncompress_tarball(url, data_root)
 
@@ -33,7 +33,8 @@ def download_and_convert(size, data_root):
     
     print("[!] Converting images...")
     for dirname in dirnames:
-        paths = glob.glob("flower_photos/"+dirname+"/*.jpg")
+        paths = glob.glob(os.path.join(
+            data_root, "flower_photos", dirname, "*.jpg"))
         
         # training data
         for path in paths[:-10]:
