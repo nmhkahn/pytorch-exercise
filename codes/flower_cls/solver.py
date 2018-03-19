@@ -10,7 +10,6 @@ from dataset import Dataset
 
 class Solver():
     def __init__(self, args):
-
         self.net     = Net()
         self.loss_fn = nn.CrossEntropyLoss()
         self.optim   = torch.optim.Adam(self.net.parameters(), args.lr)
@@ -67,6 +66,7 @@ class Solver():
                             shuffle=False, drop_last=False)
 
         num_correct, num_total = 0, 0
+        self.net.eval()
         for inputs in loader:
             X  = Variable(inputs[0], volatile=True).cuda()
             y  = inputs[1].cuda()

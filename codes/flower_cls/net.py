@@ -9,12 +9,18 @@ class Net(nn.Module):
             nn.Conv2d(3, 64, 3, 1, 1),
             nn.ReLU(),
         )
-        self.block1 = self._make_layers(64, 64, 2)
-        self.block2 = self._make_layers(64, 128, 2)
-        self.block3 = self._make_layers(128, 128, 2)
+        self.block1 = self._make_layers(64, 128, 2)
+        self.block2 = self._make_layers(128, 128, 2)
+        self.block3 = self._make_layers(128, 256, 2)
 
         self.max_pool = nn.MaxPool2d(2)
-        self.fc = nn.Linear(128*8*8, 5)
+        self.fc1 = nn.Sequential(
+            nn.Dropout(0.5),
+            nn.Linear(256*4*4, 256),
+            nn.BatchNorm1d(256),
+            nn.ReLU(inplace=True)
+        )
+        self.fc2 = nn.Linear(256, 5)
 
     def _make_layers(self, 
                      in_channels, out_channels, 
@@ -24,7 +30,7 @@ class Net(nn.Module):
             layers += [
                 nn.Conv2d(in_channels, out_channels, 3, 1, 1),
                 nn.BatchNorm2d(out_channels),
-                nn.ReLU(),
+                nn.ReLU(inplace=True),
             ]
             in_channels = out_channels
 
@@ -44,5 +50,6 @@ class Net(nn.Module):
         out = self.max_pool(out)
         
         out = out.view(out.size(0), -1)
-        out = self.fc(out)
+        out = self.fc1(out)
+        out = self.fc2(out)
         return out
