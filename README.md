@@ -3,18 +3,16 @@
 ## Contents
 
 #### 1. Basics
-- [PyTorch 101]()
-- [MNIST Classification](exercises/cnn_mnist)
-- [Custom Dataset]()
-- [TensorBoard](exercises/tensorboard)
+- [MNIST Classification](codes/mnist)
+- [Flower Classification with Custom Dataset](codes/flower_cls)
 
 #### 2. CNN Applications
-- [Image Super-resolution](exercises/super_resolution)
+- [Image Super-resolution](codes/super_resolution)
 - [Image Segmentation]()
 - [Image Colorization]()
 - [Style Transfer]()
 
 #### 3. RNN Applications
-- [Char-RNN]()
-- [Text Classification]()
+- [Char-RNN](codes/char_rnn)
+- [Text Classification](codes/text_cls)
 - [Seq2seq]()
