@@ -11,7 +11,6 @@ def main():
     parser.add_argument("--ckpt_dir", type=str, default="./checkpoint")
     parser.add_argument("--ckpt_name", type=str, default="flower")
     parser.add_argument("--print_every", type=int, default=1)
-    parser.add_argument("--result_dir", type=str, default="./result")
     
     # if you change image size, you must change all the network channels
     parser.add_argument("--image_size", type=int, default=64)

@@ -9,22 +9,21 @@ class Net(nn.Module):
             nn.Conv2d(3, 64, 3, 1, 1),
             nn.ReLU(),
         )
-        self.block1 = self._make_layers(64, 128, 2)
-        self.block2 = self._make_layers(128, 128, 2)
-        self.block3 = self._make_layers(128, 256, 2)
+        self.block1 = self._make_block(64, 128, 2)
+        self.block2 = self._make_block(128, 256, 2)
+        self.block3 = self._make_block(256, 512, 2)
 
         self.max_pool = nn.MaxPool2d(2)
         self.fc1 = nn.Sequential(
-            nn.Dropout(0.5),
-            nn.Linear(256*4*4, 256),
-            nn.BatchNorm1d(256),
+            nn.Linear(512*4*4, 512),
+            nn.BatchNorm1d(512),
             nn.ReLU(inplace=True)
         )
-        self.fc2 = nn.Linear(256, 5)
+        self.fc2 = nn.Linear(512, 5)
 
-    def _make_layers(self, 
-                     in_channels, out_channels, 
-                     num_layers=2):
+    def _make_block(self, 
+                    in_channels, out_channels, 
+                    num_layers=2):
         layers = list()
         for i in range(num_layers):
             layers += [

@@ -32,8 +32,6 @@ class Solver():
         
         if not os.path.exists(args.ckpt_dir):
             os.makedirs(args.ckpt_dir)
-        if not os.path.exists(args.result_dir):
-            os.makedirs(args.result_dir)
         
     def fit(self):
         args = self.args
