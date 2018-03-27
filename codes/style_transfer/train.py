@@ -6,7 +6,7 @@ from torch.autograd import Variable
 from utils import *
 from vgg import *
 
-def MSELoss(feat1, feat2):
+def mse(feat1, feat2):
     return torch.mean((feat1-feat2)**2)
 
 
@@ -23,15 +23,22 @@ def single_layer_style_loss(X_feat, style_feat):
     X_gram = gram_matrix(X_feat)
     style_gram = gram_matrix(style_feat)
 
-    return MSELoss(X_gram, style_gram) / (c*h*w)
+    return mse(X_gram, style_gram) / (c*h*w)
 
 
 def single_layer_content_loss(X_feat, content_feat):
-    return MSELoss(X_feat, content_feat)
+    return mse(X_feat, content_feat)
+
+
+def total_variance_loss(image):
+    w_variance = torch.sum((image[:,:,:,1:] - image[:,:,:,:-1])**2)
+    h_variance = torch.sum((image[:,:,1:,:] - image[:,:,:-1,:])**2)
+
+    return w_variance + h_variance
 
 
 def fit(X, content, style, args):
-    style_weights = [0.5, 1.0, 1.5, 3.0, 4.0]
+    style_weights = [4.0, 3.0, 1.5, 1.0, 0.5]
 
     print("[!] Prepare the pretrained VGGNet")
     vgg = VGGNet().cuda()
@@ -53,8 +60,13 @@ def fit(X, content, style, args):
         for i, feat in enumerate(zip(X_style_feats, style_feats)):
             X_feat, style_feat = feat
             style_loss += single_layer_style_loss(X_feat, style_feat)
+
+        tv_loss = total_variance_loss(X)
        
-        loss = args.alpha * content_loss + args.beta * style_loss 
+        loss = args.alpha * content_loss + \
+               args.beta * style_loss + \
+               args.tv * tv_loss
+
         optim.zero_grad()
         loss.backward()
         optim.step()
@@ -97,6 +109,7 @@ if __name__ == "__main__":
     
     parser.add_argument("--alpha", type=float, default=1.0)
     parser.add_argument("--beta", type=float, default=100.0)
+    parser.add_argument("--tv", type=float, default=0.001)
     parser.add_argument("--lr", type=float, default=0.01)
     args = parser.parse_args()
 
