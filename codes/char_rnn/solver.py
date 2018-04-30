@@ -32,10 +32,13 @@ class Solver():
             for step, inputs in enumerate(self.train_iter):
                 X = inputs.text.to(self.device)
                 y = inputs.target.to(self.device)
-                
+
+                # NOTE:
+                # For char-RNN, behaviors of train and sample phase are different.
+                # e.g. The model can't see the the ground-truth sentence in the sample phase.
+                #      So, the input of each time-step has to be the output of previous time.
+                # To handle it, I implement RNN model by for-loop to unroll it.
                 loss = 0
-                # unrolling the RNN
-                # behavior of train and sample phase are different
                 for i in range(X.size(0)):
                     hidden = hidden if i > 0 else None
                     out, hidden = self.net(X[i, :], hidden)
