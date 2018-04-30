@@ -2,32 +2,30 @@ import torch
 import torch.nn as nn
 import torchvision.datasets as datasets
 import torchvision.transforms as transforms
-from torch.autograd import Variable
-from tensorboardX import SummaryWriter
+from torch.utils.data import DataLoader
 from net import Net
 
-def eval(net, loader):
+def evaluate(net, loader, device):
     net.eval()
     num_correct, num_total = 0, 0
-    for inputs in loader:
-        images  = Variable(inputs[0]).cuda()
-        labels  = inputs[1].cuda()
 
-        outputs = net(images)
-        _, preds = torch.max(outputs.data, 1)
+    # same as volatile=True of the v0.3
+    with torch.no_grad():
+        for inputs in loader:
+            images = inputs[0].to(device)
+            labels = inputs[1].to(device)
 
-        num_correct += (preds == labels).sum()
-        num_total += labels.size(0)
+            outputs = net(images)
+            _, preds = torch.max(outputs.detach(), 1)
+
+            num_correct += (preds == labels).sum().item()
+            num_total += labels.size(0)
 
     return num_correct / num_total
 
 
 def train(args):
-    net = Net().cuda()
-    # tensorboard writer for log summary
-    writer = SummaryWriter()
-    
-    # MNIST dataset
+    # prepare the MNIST dataset
     train_dataset = datasets.MNIST(root="./data/",
                                    train=True, 
                                    transform=transforms.ToTensor(),
@@ -37,43 +35,47 @@ def train(args):
                                   train=False, 
                                   transform=transforms.ToTensor())
 
-    # data loader
-    train_loader = torch.utils.data.DataLoader(dataset=train_dataset,
-                                               batch_size=args.batch_size, 
-                                               shuffle=True)
+    # create the data loader
+    train_loader = DataLoader(dataset=train_dataset,
+                              batch_size=args.batch_size, 
+                              shuffle=True, drop_last=True)
 
-    test_loader = torch.utils.data.DataLoader(dataset=test_dataset,
-                                              batch_size=args.batch_size, 
-                                              shuffle=False)
+    test_loader = DataLoader(dataset=test_dataset,
+                             batch_size=args.batch_size, 
+                             shuffle=False)
+
     
-    # create loss operation and optimizer
+    # turn on the CUDA if available
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    
+    net = Net().to(device)
     loss_op = nn.CrossEntropyLoss()
     optim   = torch.optim.Adam(net.parameters(), lr=args.lr)
 
     for epoch in range(args.max_epochs):
         net.train()
         for step, inputs in enumerate(train_loader):
-            images = Variable(inputs[0]).cuda()
-            labels = Variable(inputs[1]).cuda()
-
-            optim.zero_grad()
+            images = inputs[0].to(device)
+            labels = inputs[1].to(device)
+            
+            # forward-propagation
             outputs = net(images)
             loss = loss_op(outputs, labels)
+            
+            # back-propagation
+            optim.zero_grad()
             loss.backward()
             optim.step()
 
-        acc = eval(net, test_loader)
-
-        # write scalar log on tensorboard
-        writer.add_scalar("acc", acc, epoch+1)
-
+        acc = evaluate(net, test_loader, device)
         print("Epoch [{}/{}] loss: {:.5f} test acc: {:.3f}"
-              .format(epoch+1, args.max_epochs, loss.data[0], acc))
+              .format(epoch+1, args.max_epochs, loss.item(), acc))
 
     torch.save(net.state_dict(), "mnist-final.pth")
 
 def main():
     import argparse
+
     parser = argparse.ArgumentParser()
     parser.add_argument("--max_epochs", type=int, default=5)
     parser.add_argument("--batch_size", type=int, default=64)

@@ -15,7 +15,7 @@ class Net(nn.Module):
 
         self.max_pool = nn.MaxPool2d(2)
         self.fc1 = nn.Sequential(
-            nn.Linear(512*4*4, 512),
+            nn.Linear(512*8*8, 512),
             nn.BatchNorm1d(512),
             nn.ReLU(inplace=True)
         )

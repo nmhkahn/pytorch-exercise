@@ -17,8 +17,6 @@ def main():
     parser.add_argument("--ckpt_name", type=str, default="char-rnn")
     parser.add_argument("--print_every", type=int, default=1)
     
-    parser.add_argument("--result_dir", type=str, default="result")
-
     args = parser.parse_args()
     solver = Solver(args)
     solver.fit()

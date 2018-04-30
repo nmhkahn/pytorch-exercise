@@ -1,8 +1,6 @@
 import os
 import numpy as np
 import torch
-import torch.nn as nn
-from torch.autograd import Variable
 from utils import *
 from vgg import *
 
@@ -37,11 +35,11 @@ def total_variance_loss(image):
     return w_variance + h_variance
 
 
-def fit(X, content, style, args):
+def fit(X, content, style, device, args):
     style_weights = [4.0, 3.0, 1.5, 1.0, 0.5]
 
     print("[!] Prepare the pretrained VGGNet")
-    vgg = VGGNet().cuda()
+    vgg = VGGNet().to(device)
     optim = torch.optim.Adam([X], args.lr, betas=[0.5, 0.999])
 
     print("[!] Start training")        
@@ -73,9 +71,9 @@ def fit(X, content, style, args):
         
         if (step+1) % args.print_every == 0:
             print("[{}/{}] Style Loss: {:.3f} Content Loss: {:.3f}"
-                .format(step+1, args.max_steps, style_loss.data[0], content_loss.data[0]))
+                .format(step+1, args.max_steps, style_loss.item(), content_loss.item()))
 
-            save_image(X.data, os.path.join(args.result_dir, "result_{}.png".format(step+1)))
+            save_image(X.detach()[0], os.path.join(args.result_dir, "result_{}.png".format(step+1)))
 
 
 def main(args):
@@ -83,16 +81,19 @@ def main(args):
     content, style = prepare_images(
         args.content, args.style, args.resize_side_max)
 
-    # cudafy input images
-    content = content.cuda()
-    style   = style.cuda()
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+    # cudafy if available
+    content = content.to(device)
+    style   = style.to(device)
     
-    # init content image and optimizer
-    X = Variable(content.clone(), requires_grad=True)
-    content = Variable(content, requires_grad=False)
-    style   = Variable(style, requires_grad=False)
-    
-    fit(X, content, style, args)
+    X = content.clone()
+    X.requires_grad_(True)
+
+    content.requires_grad_(False)
+    style.requires_grad_(False)
+
+    fit(X, content, style, device, args)
         
  
 if __name__ == "__main__":

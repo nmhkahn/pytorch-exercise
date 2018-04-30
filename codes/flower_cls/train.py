@@ -13,7 +13,7 @@ def main():
     parser.add_argument("--print_every", type=int, default=1)
     
     # if you change image size, you must change all the network channels
-    parser.add_argument("--image_size", type=int, default=64)
+    parser.add_argument("--image_size", type=int, default=128)
     parser.add_argument("--data_root", type=str, default="./data")
 
     args = parser.parse_args()

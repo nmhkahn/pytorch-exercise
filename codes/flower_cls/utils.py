@@ -17,7 +17,7 @@ def download_and_uncompress_tarball(tarball_url, dataset_dir):
     tarfile.open(filepath, "r:gz").extractall(dataset_dir)
 
 
-def download_and_convert(size, data_root):
+def download_and_convert(data_root):
     if not os.path.exists(data_root):
         os.makedirs(data_root)
     
@@ -52,25 +52,21 @@ def download_and_convert(size, data_root):
         if not os.path.exists(os.path.join(data_dir, "test", dirname)):
             os.makedirs(os.path.join(data_dir, "test", dirname))
         
-        # training data
+        # prepare a training data
         for path in paths[:-num_test]:
             new_path = os.path.join(data_dir, "train",
                 dirname, path.split("/")[-1])
+
             im = misc.imread(path)
-            if size != -1:
-                im = misc.imresize(im, (size, size))
-            
             misc.imsave(new_path, im)
             train_writer.writerow([new_path, dirname])
 
-        # test data
+        # prepare a test data
         for path in paths[-num_test:]:
             new_path = os.path.join(data_dir, "test",
                 dirname, path.split("/")[-1])
+
             im = misc.imread(path)
-            if size != -1 :
-                im = misc.imresize(im, (size, size))
-            
             misc.imsave(new_path, im)
             test_writer.writerow([new_path, dirname])
 

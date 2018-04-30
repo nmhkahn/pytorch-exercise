@@ -1,34 +1,28 @@
 import os
 import numpy as np
 import torch
-import torch.nn as nn
-from torch.autograd import Variable
 from net import Net
 from utils import *
 
 class Solver():
     def __init__(self, args):
-        
-        # load SST dataset
+        # prepare shakespeare dataset
         train_iter, data_info = load_shakespeare(args.batch_size, args.bptt_len)
         self.vocab_size = data_info["vocab_size"]
         self.TEXT = data_info["TEXT"]
-
-        self.net = Net(self.vocab_size, args.embed_dim, 
-                       args.hidden_dim, args.num_layers)
-        self.loss_fn = nn.CrossEntropyLoss()
-        self.optim   = torch.optim.Adam(self.net.parameters(), args.lr)
         
-        self.net     = self.net.cuda()
-        self.loss_fn = self.loss_fn.cuda()
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        
+        self.net = Net(self.vocab_size, args.embed_dim, 
+                       args.hidden_dim, args.num_layers).to(self.device)
+        self.loss_fn = torch.nn.CrossEntropyLoss()
+        self.optim   = torch.optim.Adam(self.net.parameters(), args.lr)
         
         self.args = args
         self.train_iter = train_iter
         
         if not os.path.exists(args.ckpt_dir):
             os.makedirs(args.ckpt_dir)
-        if not os.path.exists(args.result_dir):
-            os.makedirs(args.result_dir)
         
     def fit(self):
         args = self.args
@@ -36,10 +30,12 @@ class Solver():
         for epoch in range(args.max_epochs):
             self.net.train()
             for step, inputs in enumerate(self.train_iter):
-                X = inputs.text.cuda()
-                y = inputs.target.cuda()
+                X = inputs.text.to(self.device)
+                y = inputs.target.to(self.device)
                 
                 loss = 0
+                # unrolling the RNN
+                # behavior of train and sample phase are different
                 for i in range(X.size(0)):
                     hidden = hidden if i > 0 else None
                     out, hidden = self.net(X[i, :], hidden)
@@ -52,20 +48,20 @@ class Solver():
                 self.optim.step()
             
             if (epoch+1) % args.print_every == 0:
-                text = self.sample(length=100)
+                text = self.sample(length=300)
                 print("Epoch [{}/{}] loss: {:.3f}"
-                    .format(epoch+1, args.max_epochs, loss.data[0]/args.bptt_len))
+                    .format(epoch+1, args.max_epochs, loss.item()/args.bptt_len))
                 print(text, "\n")
                 self.save(args.ckpt_dir, args.ckpt_name, epoch+1)
 
     def sample(self, length, prime="First"):
-        self.net.eval()
         args = self.args
 
+        self.net.eval()
         samples = list(prime)
 
         # convert prime string to torch.LongTensor type
-        prime = self.TEXT.process(prime, device=0, train=False).cuda()
+        prime = self.TEXT.process(prime, device=0, train=False).to(self.device)
 
         # prepare the first hidden state
         for i in range(prime.size(1)):

@@ -1,6 +1,7 @@
 *.swp
 __pycache__
 *.pth
+.ipynb_checkpoints
 
 data
 checkpoint
