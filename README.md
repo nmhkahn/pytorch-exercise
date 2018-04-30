@@ -48,7 +48,7 @@ python train.py
 Input arguments are vary among the codes, so please check the `train.py` for more details.
 
 ## Known issues
-1. `UnicodeDecodeError: 'ascii' codec can't decode byte 0xc3` when run the text classification.
+1. `UnicodeDecodeError: 'ascii' codec can't decode byte 0xc3` when run the text classification.<br/>
 : Please refer [this issue](https://github.com/pytorch/text/issues/77).
 
 ## Suggested Readings
