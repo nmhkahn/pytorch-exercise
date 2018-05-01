@@ -11,7 +11,7 @@ def main():
     
     parser.add_argument("--embed_dim", type=int, default=300)
     parser.add_argument("--hidden_dim", type=int, default=512)
-    parser.add_argument("--num_layers", type=int, default=3)
+    parser.add_argument("--num_layers", type=int, default=1)
     
     parser.add_argument("--ckpt_dir", type=str, default="checkpoint")
     parser.add_argument("--ckpt_name", type=str, default="char-rnn")

@@ -28,23 +28,14 @@ class Solver():
         args = self.args
 
         for epoch in range(args.max_epochs):
+            text = self.sample(length=300)
             self.net.train()
             for step, inputs in enumerate(self.train_iter):
                 X = inputs.text.to(self.device)
                 y = inputs.target.to(self.device)
 
-                # NOTE:
-                # For char-RNN, behaviors of train and sample phase are different.
-                # e.g. The model can't see the the ground-truth sentence in the sample phase.
-                #      So, the input of each time-step has to be the output of previous time.
-                # To handle it, I implement RNN model by for-loop to unroll it.
-                loss = 0
-                for i in range(X.size(0)):
-                    hidden = hidden if i > 0 else None
-                    out, hidden = self.net(X[i, :], hidden)
-
-                    out = out.view(args.batch_size, -1)
-                    loss += self.loss_fn(out, y[i, :])
+                out, _ = self.net(X)
+                loss = self.loss_fn(out, y.view(-1))
 
                 self.optim.zero_grad()
                 loss.backward()
@@ -57,39 +48,25 @@ class Solver():
                 print(text, "\n")
                 self.save(args.ckpt_dir, args.ckpt_name, epoch+1)
 
-    def sample(self, length, prime="First"):
+    def sample(self, length, prime="The"):
         args = self.args
 
         self.net.eval()
         samples = list(prime)
 
         # convert prime string to torch.LongTensor type
-        prime = self.TEXT.process(prime, device=0, train=False).to(self.device)
-
-        # prepare the first hidden state
-        for i in range(prime.size(1)):
-            hidden = hidden if i > 0 else None
-            _, hidden = self.net(prime[:, i], hidden)
+        prime = self.TEXT.process(prime, device=self.device, train=False)
         
-        X = prime[:, -1]
-        self.TEXT.sequential = False
-        for i in range(length):
-            out, hidden = self.net(X, hidden)
-            
-            # sample the maximum probability character
-            _, argmax = torch.max(out, 1)
-
-            # preprocessing for next iteration
-            out = self.TEXT.vocab.itos[argmax.data[0]]
-            X = self.TEXT.numericalize([out], device=0, train=False).cuda()
-
+        indices = self.net.sample(prime, length)
+        # convert char indices to string type
+        for index in indices:
+            out = self.TEXT.vocab.itos[index.item()]
             samples.append(out.replace("<eos>", "\n"))
         
         self.TEXT.sequential = True
 
         return "".join(samples)
                 
-
     def save(self, ckpt_dir, ckpt_name, global_step):
         save_path = os.path.join(
             ckpt_dir, "{}_{}.pth".format(ckpt_name, global_step))

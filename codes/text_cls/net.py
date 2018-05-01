@@ -1,10 +1,9 @@
 import torch.nn as nn
-import torch.nn.functional as F
 
 class Net(nn.Module):
     def __init__(self, TEXT,
-		         hidden_dim=512, num_layers=1,
-                 num_class=4):
+		         hidden_dim=512, num_layers=2,
+                 num_class=5):
         super().__init__()
 
         vocab_size = TEXT.vocab.vectors.size(0)
@@ -25,7 +24,7 @@ class Net(nn.Module):
     
     def forward(self, x):
         embed = self.embedding(x)
-        hidden, _ = self.encoder(embed)
+        out, _ = self.encoder(embed)
         
-        out = self.linear(hidden[-1])
+        out = self.linear(out[-1])
         return out
