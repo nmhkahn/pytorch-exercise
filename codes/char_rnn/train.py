@@ -13,6 +13,9 @@ def main():
     parser.add_argument("--hidden_dim", type=int, default=512)
     parser.add_argument("--num_layers", type=int, default=1)
     
+    parser.add_argument("--sample_prime", type=str, default="All:")
+    parser.add_argument("--sample_length", type=int, default=500)
+    
     parser.add_argument("--ckpt_dir", type=str, default="checkpoint")
     parser.add_argument("--ckpt_name", type=str, default="char-rnn")
     parser.add_argument("--print_every", type=int, default=1)

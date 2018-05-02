@@ -15,7 +15,7 @@ class Solver():
         
         self.net = Net(self.vocab_size, args.embed_dim, 
                        args.hidden_dim, args.num_layers).to(self.device)
-        self.loss_fn = torch.nn.CrossEntropyLoss()
+        self.loss_fn = torch.nn.CrossEntropyLoss(ignore_index=1) # <pad>: 1
         self.optim   = torch.optim.Adam(self.net.parameters(), args.lr)
         
         self.args = args
@@ -42,7 +42,7 @@ class Solver():
                 self.optim.step()
             
             if (epoch+1) % args.print_every == 0:
-                text = self.sample(length=300)
+                text = self.sample(args.sample_length, args.sample_prime)
                 print("Epoch [{}/{}] loss: {:.3f}"
                     .format(epoch+1, args.max_epochs, loss.item()/args.bptt_len))
                 print(text, "\n")
@@ -57,7 +57,9 @@ class Solver():
         # convert prime string to torch.LongTensor type
         prime = self.TEXT.process(prime, device=self.device, train=False)
         
+        # sample character indices
         indices = self.net.sample(prime, length)
+
         # convert char indices to string type
         for index in indices:
             out = self.TEXT.vocab.itos[index.item()]
