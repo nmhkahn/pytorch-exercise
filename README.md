@@ -17,20 +17,22 @@ This repository provides some exercise codes to learn PyTorch. Since this repo d
 #### 3. RNN Applications
 - [Char-RNN](codes/char_rnn)
 - [Text Classification](codes/text_cls)
-- [Seq2seq]()
-- [Image Captioning]()
+- [Image Captioning](codes/caption)
+
+#### 4. Utilities
+- [Visdom & torchsummary](codes/utilities)
 
 ## Installation
 Make sure you have Python 3.5 or newer version. Installing the requirements are as follow:
 
-```
+```shell
 pip install -r requirements.txt
 ```
 
 #### (Optional)
 For the RNN Applications codes, Some tokenizer pacakages such as [SpaCy](http://spacy.io/) or [NLTK](http://nltk.org/) are needed. You need to install these packages and its English model and data.
 
-```
+```shell
 # install SpaCy
 pip install spacy
 python -m spacy download en
@@ -40,9 +42,15 @@ pip install nltk
 python -m nltk.downloader perluniprops nonbreaking_prefixes
 ```
 
+[Visdom](https://github.com/facebookresearch/visdom) and [torchsummary](https://github.com/sksq96/pytorch-summary) are used in utilities exercise code. Please install these packages before run it.
+
+```shell
+pip install visdom torchsummary
+```
+
 ## Getting Started
 Simply run
-```
+```shell
 python train.py
 ```
 Input arguments are vary among the codes, so please check the `train.py` for more details.
