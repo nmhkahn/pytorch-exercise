@@ -2,7 +2,7 @@ import torch.nn as nn
 
 class Net(nn.Module):
     def __init__(self, TEXT,
-		         hidden_dim=512, num_layers=2,
+                 hidden_dim=512, num_layers=2,
                  num_class=5):
         super().__init__()
 
