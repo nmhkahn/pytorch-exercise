@@ -120,7 +120,7 @@ def collate_fn(data):
 def get_caption_dataset(train, 
                         data_root="./data", 
                         batch_size=32, image_size=224,
-                        num_workers=1, shuffle=True,
+                        num_workers=4, shuffle=True,
                         text_field=False):
     dataset = CaptionDataset(train=train, 
         image_size=image_size, data_root=data_root)

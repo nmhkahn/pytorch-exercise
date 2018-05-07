@@ -2,6 +2,7 @@
 __pycache__
 *.pth
 .ipynb_checkpoints
+.vector_cache
 
 data
 checkpoint

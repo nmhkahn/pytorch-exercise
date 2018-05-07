@@ -20,8 +20,7 @@ class Solver():
 
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-        self.net = Net(TEXT, args.freeze,
-                       args.hidden_dim, args.num_layers).to(self.device)
+        self.net = Net(TEXT, args.hidden_dim, args.num_layers).to(self.device)
         self.loss_fn = torch.nn.CrossEntropyLoss(ignore_index=1) # <pad>: 1
         self.optim   = torch.optim.Adam(
             filter(lambda p: p.requires_grad, self.net.parameters()),
