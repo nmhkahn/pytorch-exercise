@@ -79,16 +79,15 @@ class Decoder(nn.Module):
         hidden = None
         embed = feature.unsqueeze(1)
                 
-        indices = torch.zeros((batch_size, 50), dtype=torch.int64)
+        indices = list()
         for t in range(50):
             out, hidden = self.rnn(embed, hidden)
             out = self.linear(out.squeeze(1))
 
             _, argmax = torch.max(out, 1)
-            indices[:, t] = argmax
+            indices.append(argmax)
                         
-            # previous output is current output
-            embed = self.embedding(argmax)
-            embed = embed.unsqueeze(1)
+            # previous output is current input
+            embed = self.embedding(argmax).unsqueeze(1)
                                           
-        return indices.numpy()
+        return torch.stack(indices, 1).cpu().numpy()
