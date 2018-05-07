@@ -7,6 +7,7 @@ This repository provides some exercise codes to learn PyTorch. Since this repo d
 #### 1. Basics
 - [MNIST Classification](codes/mnist)
 - [Flower Classification (Custom Dataset)](codes/flower_cls)
+- [Utilities](codes/utilities)
 
 #### 2. CNN Applications
 - [Image Super-resolution](codes/super_resolution)
@@ -17,10 +18,8 @@ This repository provides some exercise codes to learn PyTorch. Since this repo d
 #### 3. RNN Applications
 - [Char-RNN](codes/char_rnn)
 - [Text Classification](codes/text_cls)
-- [Image Captioning](codes/caption)
-
-#### 4. Utilities
-- [Visdom & torchsummary](codes/utilities)
+- [Show and Tell (CUB dataset)](codes/show_and_tell)
+- [Show Attend and Tell (COCO dataset)](codes/show_attend_and_tell)
 
 ## Installation
 Make sure you have Python 3.5 or newer version. Installing the requirements are as follow:

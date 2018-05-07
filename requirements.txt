@@ -3,6 +3,6 @@ scipy
 matplotlib
 scikit-image
 jupyter
-pytorch >= 0.4.0
+torch >= 0.4.0
 torchvision >= 0.2.1
 torchtext >= 0.2.3

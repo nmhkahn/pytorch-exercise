@@ -28,7 +28,6 @@ class Solver():
         args = self.args
 
         for epoch in range(args.max_epochs):
-            text = self.sample(length=300)
             self.net.train()
             for step, inputs in enumerate(self.train_iter):
                 X = inputs.text.to(self.device)
