@@ -1,6 +1,8 @@
+*.DS_store
 *.swp
-__pycache__
 *.pth
+__pycache__
+
 .ipynb_checkpoints
 .vector_cache
 

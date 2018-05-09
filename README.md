@@ -48,7 +48,7 @@ pip install visdom torchsummary
 ```
 
 ## Getting Started
-Simply run
+Since dataset is downloaded and preprocessed automatically in the runtime (except few exercises) simply running below start training.
 ```shell
 python train.py
 ```
