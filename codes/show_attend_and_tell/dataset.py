@@ -93,7 +93,7 @@ class CaptionDataset(torch.utils.data.Dataset):
         for idx in indices:
             word = CaptionDataset.TEXT.vocab.itos[idx.item()]
 
-            if word in ["<pad>"]: continue
+            if word in ["<pad>", "<start>"]: continue
             if word in ["<end>"]: break
 
             # no needs of space between the special symbols

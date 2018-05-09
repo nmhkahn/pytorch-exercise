@@ -6,7 +6,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--lr", type=float, default=0.001)
     parser.add_argument("--batch_size", type=int, default=64)
-    parser.add_argument("--max_epochs", type=int, default=50)
+    parser.add_argument("--max_epochs", type=int, default=20)
     
     parser.add_argument("--max_vocab", type=int, default=10000)
     parser.add_argument("--embed_dim", type=int, default=300)
