@@ -23,11 +23,14 @@ python train.py
 Please see `visualize.ipynb`.
 
 ## Results
-**Generated:**  a white bird with grey wings and an orange bill.
+**Generated:**  a white bird with grey wings and an orange bill. <br>
 ![image1](assets/image_1.jpg)
-**Generated:**  this is a bird with a white belly and grey wings.
+
+**Generated:**  this is a bird with a white belly and grey wings. <br>
 ![image2](assets/image_2.jpg)
-**Generated:**  the small yellow bird has black wings and a yellow eyebrow.
+
+**Generated:**  the small yellow bird has black wings and a yellow eyebrow. <br>
 ![image3](assets/image_3.jpg)
-**Generated:**  this is a large, all black bird with a blunt, wide beak, large black wings, long black tail and black head.
+
+**Generated:**  this is a large, all black bird with a blunt, wide beak, large black wings, long black tail and black head. <br>
 ![image4](assets/image_4.jpg)
